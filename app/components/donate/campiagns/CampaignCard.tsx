@@ -12,7 +12,8 @@ import { CampaignDonations } from "./CampaignDialog"
 import { CampaignCardProps } from "@/lib/types"
 import { FC } from "react"
 
-export const CampaignCard:FC<CampaignCardProps>=({title,description,name,email,donatedAmount,amount,deployedContractAddress,proposalId})=>{
+export const CampaignCard:FC<CampaignCardProps>=({title,description,name,email,donatedAmount,amount,deployedContractAddress,proposalId,endDate})=>{
+  console.log("the todays date is",endDate.toLocaleString().slice(0,10));
     return (
         <Card className=" w-96">
           <CardHeader>
@@ -38,7 +39,11 @@ export const CampaignCard:FC<CampaignCardProps>=({title,description,name,email,d
             </div>
             </div>
           </CardContent>
-          <CardFooter className=" w-full flex justify-end">
+          <CardFooter className=" w-full flex justify-between items-center">
+            <div className=" ">
+              <h3 className=" text-sm text-muted-foreground">End Date</h3>
+              <p>{endDate.toLocaleString().slice(0,10)}</p>
+            </div>
             <CampaignDonations
               id={proposalId}
               address={deployedContractAddress}
