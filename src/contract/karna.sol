@@ -79,7 +79,7 @@ contract Karna {
     struct Proposal {
         string name;
         address proposer;
-        uint256 amountInBnb;
+        uint256 amountInWei;
         uint256 deadline;
         address[] voters;
         bool executed;
@@ -150,7 +150,7 @@ contract Karna {
         proposals[proposalId] = Proposal({
             name: _name,
             proposalType: ProposalType.CAMPAIGN,
-            amountInBnb: _amount,
+            amountInWei: _amount,
             proposer: msg.sender,
             deadline: block.timestamp + _durationInSeconds,
             voters: new address[](0),
@@ -174,7 +174,7 @@ contract Karna {
         proposals[proposalId] = Proposal({
             name: _name,
             proposalType: ProposalType.DIRECT_REQUEST,
-            amountInBnb: _amount,
+            amountInWei: _amount,
             proposer: msg.sender,
             deadline: 0,
             voters: new address[](0),
@@ -213,17 +213,17 @@ contract Karna {
                 campaigns[campaignId] = new Campaign(
                     proposals[proposalId].name,
                     proposals[proposalId].proposer,
-                    proposals[proposalId].amountInBnb * 1 ether,
+                    proposals[proposalId].amountInWei,
                     proposals[proposalId].deadline
                 );
                 emit CampaignCreated(proposalId, address(campaigns[campaignId]));
                 proposals[proposalId].campaignId = campaignId;
             } else{
-                require(proposals[proposalId].amountInBnb * 1 ether <= address(this).balance,
+                require(proposals[proposalId].amountInWei <= address(this).balance,
                         "Insufficient funds to execute the proposal.");
                 
                 address proposer = proposals[proposalId].proposer;
-                uint256 amount = proposals[proposalId].amountInBnb;
+                uint256 amount = proposals[proposalId].amountInWei;
                 bool result = payable(proposer).send(amount);
 
                 require(result, "Failed to transfer funds directly to proposer.");
@@ -232,6 +232,11 @@ contract Karna {
             }
             proposals[proposalId].executed = true;
         }
+    }
+
+    // Function to donate to project
+    function donate() public payable {
+        require(msg.value > 0, "Sent value must be greater than 0");
     }
 
     // Function to get the total number of proposals created
