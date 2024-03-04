@@ -13,11 +13,22 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Calendar } from "@/components/ui/calendar"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useState } from "react";
 import { AddFundRaiseProps } from "@/lib/types";
 import { useFundRaiseContext } from "@/lib/context/FundraiseContext";
 import { GetTransactionProvider } from "@/helpers/wallet/GetTransactionProvider";
+import { CalendarIcon } from "@radix-ui/react-icons"
+import { format } from "date-fns"
+
+
 
 export function CreateDialog() {
   const {storeInitialFundDetails}=useFundRaiseContext();
@@ -28,7 +39,8 @@ export function CreateDialog() {
     email:'',
     type: 'Campaign',
     amount: 0,
-    description: ''
+    description: '',
+    endDate: undefined
   });
 
   const handleChange=(e:React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>)=>{
@@ -43,6 +55,18 @@ export function CreateDialog() {
       ...form,
       type:type
     });
+  }
+
+  const handleDateChange=(date:Date|undefined)=>{
+    if(date)
+    {
+      setForm({
+        ...form,
+        endDate:date
+      });
+      console.log("the form details are",form);
+      
+    }
   }
 
   const handleSubmit=(e:React.FormEvent)=>{
@@ -94,6 +118,37 @@ export function CreateDialog() {
           </div>
         </RadioGroup>
         </div>
+        {form.type==="Campaign" && (
+                  <div className="grid w-full max-w-sm items-center gap-1.5">
+                  <Label htmlFor="endDate" className=" py-1">EndDate</Label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "w-[240px] justify-start text-left font-normal",
+                          !form.endDate && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {form.endDate ? format(form.endDate, "PPP") : <span>Pick your end date</span>}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={form.endDate}
+                        onSelect={handleDateChange}
+                        disabled={(date) =>
+                          date < new Date()
+                        }
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
+        )
+        }
         <div className="grid w-full max-w-sm items-center gap-1.5">
           <Label htmlFor="amount">Amount</Label>
           <Input type="number" id="amount" placeholder="Enter In BNB" name="amount" value={form.amount} onChange={handleChange}/>

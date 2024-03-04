@@ -5,7 +5,8 @@ export type AddFundRaiseProps={
     email:string;
     type: string;
     amount: number;
-    description: string
+    description: string;
+    endDate: Date|undefined;
 }
 
 export type FundRaiseProps=AddFundRaiseProps&{
