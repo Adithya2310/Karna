@@ -95,6 +95,11 @@ export const FundRaiseContextProvider: React.FC<FundRaiseContextProviderProps> =
         });
       }
     } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Try Again",
+        description: "Sorry the transaction failed",
+      });
       console.log("error in the transaction", error);
     }
   }
@@ -113,6 +118,11 @@ export const FundRaiseContextProvider: React.FC<FundRaiseContextProviderProps> =
     }
     catch(e)
     {
+      toast({
+        variant: "destructive",
+        title: "Try Again",
+        description: "Sorry the transaction failed",
+      });
       console.log("error in executing the transaction",e); 
     }
   }
@@ -132,6 +142,11 @@ export const FundRaiseContextProvider: React.FC<FundRaiseContextProviderProps> =
     }
     catch(e)
     {
+      toast({
+        variant: "destructive",
+        title: "Try Again",
+        description: "Sorry the transaction failed",
+      });
       console.log("there is an error in the donate context",e);
     }
   }

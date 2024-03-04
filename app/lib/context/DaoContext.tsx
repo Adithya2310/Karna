@@ -42,6 +42,11 @@ export const DaoContextProvider: React.FC<DaoContextProviderProps> = ({ children
           });
           return isMember;
       } catch (error) {
+          toast({
+            variant: "destructive",
+            title: "Try Again",
+            description: "Sorry the transaction failed",
+          });
           console.log("Error:", error);
           return false;
       }
@@ -71,6 +76,11 @@ export const DaoContextProvider: React.FC<DaoContextProviderProps> = ({ children
       }
       catch(e)
       {
+        toast({
+          variant: "destructive",
+          title: "Try Again",
+          description: "Sorry the transaction failed",
+        });
         console.log("the error message is",e);
       }
     }
@@ -89,6 +99,11 @@ export const DaoContextProvider: React.FC<DaoContextProviderProps> = ({ children
       }
       catch(e)
       {
+        toast({
+          variant: "destructive",
+          title: "Try Again",
+          description: "Sorry the transaction failed",
+        });
         console.log("the error message is",e);
       }
     }
