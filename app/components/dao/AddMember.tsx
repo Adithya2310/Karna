@@ -16,6 +16,7 @@ import { useDaoContext } from "@/lib/context/DaoContext"
 import { GetTransactionProvider } from "@/helpers/wallet/GetTransactionProvider"
 
 const AddMember = () => {
+  const signer=GetTransactionProvider();
     const {addMembers}=useDaoContext();
     const [address,setAddress]=useState<string>("");
     const handleChange=(e:React.ChangeEvent<HTMLInputElement>)=>{
@@ -23,7 +24,7 @@ const AddMember = () => {
     }
     const handleSubmit=()=>{
         console.log("add member to the dao",address);
-        addMembers(address);
+        addMembers(signer,address);
     }
   return (
     <Dialog>

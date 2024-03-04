@@ -43,7 +43,8 @@ export function CreateDialog() {
     driveLink:'',
     endDate: undefined
   });
-
+  // to get the signer
+  const signer=GetTransactionProvider();
   const handleChange=(e:React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>)=>{
     setForm({
       ...form,
@@ -71,7 +72,7 @@ export function CreateDialog() {
   const handleSubmit=(e:React.FormEvent)=>{
     e.preventDefault();
     console.log("Form Submitted",form);
-    storeInitialFundDetails(form);
+    storeInitialFundDetails(signer, form);
   }
 
   return (

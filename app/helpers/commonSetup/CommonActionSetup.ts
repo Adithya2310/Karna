@@ -3,12 +3,12 @@ import { ethers } from "ethers"
 import { KarnaContract } from "@/lib/data";
 export const CommonKarnaContractSetup=async (signer:any)=>{
     try {
+        console.log("logging the signer",signer);
         const signerOriginal=await signer.provider.getSigner();
         const karna_contract=new ethers.Contract(KarnaContract,KarnaAbi,signerOriginal);
         return karna_contract;   
     } catch (error) {
         console.log("error in creatign the contract object", error);
-        
     }
 }
 

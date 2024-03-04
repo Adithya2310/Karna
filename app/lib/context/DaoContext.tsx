@@ -4,12 +4,13 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { CommonKarnaContractSetup } from '@/helpers/commonSetup/CommonActionSetup';
 import { executeCampaign } from '../server/Actions';
-import { GetTransactionProvider } from "@/helpers/wallet/GetTransactionProvider";
-
+import { useAccount } from 'wagmi';
+import { useToast } from '@/components/ui/use-toast';
 // context type
 interface DaoContextType {
-    approveCampiagn:(id:number)=>void;
-    addMembers:(address:string)=>void;
+    approveCampiagn:(signer:any, id:number)=>void;
+    addMembers:(signer:any, address:string)=>void;
+    isDaoMember:(signer:any)=>Promise<boolean>;
 }
 
 // Creating the context with an initial value
@@ -22,9 +23,32 @@ interface DaoContextProviderProps {
 
 // provider for the user context
 export const DaoContextProvider: React.FC<DaoContextProviderProps> = ({ children }) => {
-    const signer=GetTransactionProvider();
+    // toaster
+    const {toast}=useToast();
+    // to get the address
+    const {address}=useAccount();
+    // to check if the member is a dao member
+    const isDaoMember=async(signer:any)=> {
+      try {
+          // Call the contract function
+          console.log("signer check in the context",signer);
+          const campaign_contract=await CommonKarnaContractSetup(signer);
+          console.log("the address is",address);
+          const isMember = await campaign_contract?.isDaoMember(address);
+          console.log("Is member from the context:",campaign_contract,isMember);
+          toast({
+            title: "Sucess",
+            description: "Transaction Excuted Sucessfully",
+          });
+          return isMember;
+      } catch (error) {
+          console.log("Error:", error);
+          return false;
+      }
+    }
+
     // to approve campaign by the dao members
-    const approveCampiagn=async(id:number)=>{
+    const approveCampiagn=async(signer:any, id:number)=>{
       try{
         console.log("aproving proposal",id);
         const karna_contract=await CommonKarnaContractSetup(signer);
@@ -34,6 +58,10 @@ export const DaoContextProvider: React.FC<DaoContextProviderProps> = ({ children
         const proposal=await karna_contract?.proposals(id);
         console.log("the resposne is",respose.events[1].args[1]);
         console.log("the proposal details",proposal);
+        toast({
+          title: "Sucess",
+          description: "Voted to the Proposal Sucessfully",
+        });
         if(proposal[3])
         {
           console.log("the resposne is",respose);
@@ -48,12 +76,16 @@ export const DaoContextProvider: React.FC<DaoContextProviderProps> = ({ children
     }
 
     // to add members to the dao
-    const addMembers=async(address:string)=>{
+    const addMembers=async(signer:any, address:string)=>{
       try{
         console.log("add member",address);
         const karna_contract=await CommonKarnaContractSetup(signer);
         console.log("contract from the setup",karna_contract);
         const respose=await karna_contract?.addMember(address);
+        toast({
+          title: "Sucess",
+          description: "Added a DAO Member successfully"
+        });
       }
       catch(e)
       {
@@ -61,7 +93,7 @@ export const DaoContextProvider: React.FC<DaoContextProviderProps> = ({ children
       }
     }
   // add all the function here
-  return <DaoContext.Provider value={{approveCampiagn, addMembers}}>{children}</DaoContext.Provider>;
+  return <DaoContext.Provider value={{approveCampiagn, addMembers, isDaoMember}}>{children}</DaoContext.Provider>;
 };
 
 // custom hook for accessing the user context 

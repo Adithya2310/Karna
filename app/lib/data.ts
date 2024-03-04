@@ -1,4 +1,4 @@
-export const KarnaContract="0x6C797CDAdA511E9A67B9eBEA2c91aAE7120b1f62";
+export const KarnaContract="0xe0a27F3FCb3f6b4bf6fd4fA4e4A1b6b5F1644007";
 
 export const KarnaAbi=[
 	{
@@ -23,6 +23,45 @@ export const KarnaAbi=[
 			}
 		],
 		"name": "CampaignCreated",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "id",
+				"type": "uint256"
+			}
+		],
+		"name": "CampaignProposalCreated",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "id",
+				"type": "uint256"
+			}
+		],
+		"name": "DirectRequestFullfilled",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "id",
+				"type": "uint256"
+			}
+		],
+		"name": "DirectRequestProposalCreated",
 		"type": "event"
 	},
 	{
@@ -59,14 +98,7 @@ export const KarnaAbi=[
 				"internalType": "uint256",
 				"name": "id",
 				"type": "uint256"
-			}
-		],
-		"name": "ProposalCreated",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
+			},
 			{
 				"indexed": false,
 				"internalType": "address",
@@ -118,11 +150,16 @@ export const KarnaAbi=[
 			},
 			{
 				"internalType": "uint256",
+				"name": "_durationInSeconds",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
 				"name": "_amount",
 				"type": "uint256"
 			}
 		],
-		"name": "createProposal",
+		"name": "createCampaignProposal",
 		"outputs": [
 			{
 				"internalType": "uint256",
@@ -131,6 +168,37 @@ export const KarnaAbi=[
 			}
 		],
 		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_name",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_amount",
+				"type": "uint256"
+			}
+		],
+		"name": "createDirectProposal",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "donate",
+		"outputs": [],
+		"stateMutability": "payable",
 		"type": "function"
 	},
 	{
@@ -193,13 +261,28 @@ export const KarnaAbi=[
 			},
 			{
 				"internalType": "uint256",
-				"name": "amount",
+				"name": "amountInWei",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "deadline",
 				"type": "uint256"
 			},
 			{
 				"internalType": "bool",
 				"name": "executed",
 				"type": "bool"
+			},
+			{
+				"internalType": "uint256",
+				"name": "campaignId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "enum Karna.ProposalType",
+				"name": "proposalType",
+				"type": "uint8"
 			}
 		],
 		"stateMutability": "view",
@@ -216,19 +299,6 @@ export const KarnaAbi=[
 		"name": "removeMember",
 		"outputs": [],
 		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "totalCampaigns",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -276,6 +346,11 @@ export const CampaignAbi=[
 				"internalType": "uint256",
 				"name": "_amount",
 				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_deadline",
+				"type": "uint256"
 			}
 		],
 		"stateMutability": "nonpayable",
@@ -316,6 +391,19 @@ export const CampaignAbi=[
 	{
 		"inputs": [],
 		"name": "amount",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "deadline",
 		"outputs": [
 			{
 				"internalType": "uint256",

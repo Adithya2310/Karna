@@ -32,7 +32,7 @@ export const CampaignCard:FC<CampaignCardProps>=({title,description,name,email,d
             </div>
             <div>
             <h3 className=" text-sm text-muted-foreground mb-1">Donation Status</h3>
-            <Progress className=" w-full" value={donatedAmount/amount} />
+            <Progress className=" w-full" value={(donatedAmount/amount)*100} />
             <div className=" w-full flex justify-end">
               <p className=" mt-1">{donatedAmount} BNB/{amount} BNB</p>
             </div>

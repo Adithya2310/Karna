@@ -22,7 +22,7 @@ const page = () => {
     <div className=' mt-10 mb-5'>
         <h2 className="text-2xl font-bold tracking-tight ">Campaigns</h2>
         <p className="text-muted-foreground">
-          you can approve all the campaigns here
+          you can approve all the Campaigns here
         </p>
       </div>
       <ApproveTable
@@ -32,7 +32,7 @@ const page = () => {
     <div className=' mt-10 mb-5'>
         <h2 className="text-2xl font-bold tracking-tight ">Campaigns</h2>
         <p className="text-muted-foreground">
-          you can approve all the campaigns here
+          you can approve all the Direct Requests here
         </p>
       </div>
       <ApproveTable
@@ -41,13 +41,13 @@ const page = () => {
     </Container>
     <Container>
     <div className=' mt-10 mb-5'>
-        <h2 className="text-2xl font-bold tracking-tight ">Campaigns</h2>
+        <h2 className="text-2xl font-bold tracking-tight ">Approved Funds</h2>
         <p className="text-muted-foreground">
-          you can approve all the campaigns here
+          You can view all the approved funds here
         </p>
       </div>
       <ApprovedTable
-        data={fundRaiseDetails.filter((data)=>data.type==="Request"&&data.approved)}
+        data={fundRaiseDetails.filter((data)=>data.approved)}
         />
     </Container>
     </>

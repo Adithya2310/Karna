@@ -17,12 +17,32 @@ import { ethers } from "ethers";
 import { usePathname } from "next/navigation";
 import { CreateDialog } from "./ui/Dialog";
 import { useFundRaiseContext } from "@/lib/context/FundraiseContext";
+import { useDaoContext } from "@/lib/context/DaoContext";
+import { GetTransactionProvider } from "@/helpers/wallet/GetTransactionProvider";
 
 export const Navbar = () => {
-    const {daoMembers}=useFundRaiseContext();
     const { openConnectModal } = useConnectModal();
     const { address, isConnected } = useAccount();
-    console.log("the address in navbar");
+    const [daoMember,setDaoMember]=useState<boolean>(false);
+    const signer=GetTransactionProvider();
+    const {isDaoMember}=useDaoContext();
+    useEffect(()=>{
+      if(isConnected)
+      {
+        const checkDaoMember=async()=>{
+          try{
+            // const res=await isDaoMember(signer);
+            // setDaoMember(res);
+          }
+          catch(e)
+          {
+            console.log("error in the check dao function",e);
+            
+          }
+        }
+        checkDaoMember();
+      }
+    },[address])
     const pathname=usePathname();
     const [selected,setSelected]=useState(()=>{
         if(pathname==="/"){
@@ -60,7 +80,7 @@ export const Navbar = () => {
         </ul>
         </div>
         <div className="flex gap-5 my-auto h-full">
-          {address ? (daoMembers.includes(address.toString())?<Link href={"/dao"}><Button className="py-4 px-4 rounded-[5px] text-white font-bold  
+          {address ? (address==="0x60FFC21291D8b169737c40067F0DfeeF4fFD8BF7" ?<Link href={"/dao"}><Button className="py-4 px-4 rounded-[5px] text-white font-bold  
           text-base transition-opacity duration-300">Dao Dashboard</Button></Link>:<CreateDialog/>):(<Button
           className="py-4 px-4 rounded-[5px] text-white font-bold  text-base transition-opacity duration-300"
           onClick={openConnectModal}
