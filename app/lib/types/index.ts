@@ -6,6 +6,7 @@ export type AddFundRaiseProps={
     type: string;
     amount: number;
     description: string;
+    driveLink: string;
     endDate: Date|undefined;
 }
 

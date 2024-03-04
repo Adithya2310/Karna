@@ -19,12 +19,11 @@ import { GetTransactionProvider } from "@/helpers/wallet/GetTransactionProvider"
 export function CampaignDonations({title,address,id}:{title:string,address:string,id:number}) {
     const {donateToCampaign}=useFundRaiseContext();
     const [amount, setAmount]=useState<number>(0);
-    const signer=GetTransactionProvider();
     const handleChange=(e:React.ChangeEvent<HTMLInputElement>)=>{
         setAmount(Number(e.target.value));
     }
     const handleSubmit=()=>{
-        donateToCampaign(signer,amount,address,id);
+        donateToCampaign(amount,address,id);
     }
   return (
     <Dialog>

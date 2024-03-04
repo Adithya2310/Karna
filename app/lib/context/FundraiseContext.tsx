@@ -6,15 +6,16 @@ import { storeFundDetails, donateCampaign  } from '../server/Actions';
 import axios from 'axios';
 import { CommonKarnaContractSetup,CommonCampaignContractSetup } from '@/helpers/commonSetup/CommonActionSetup';
 import { ethers } from 'ethers';
+import { GetTransactionProvider } from '@/helpers/wallet/GetTransactionProvider';
 
 // context type
 interface FundRaiseContextType {
     daoMembers: string[];
-    storeInitialFundDetails: (signer:any,ProductData:AddFundRaiseProps) => void;
+    storeInitialFundDetails: (ProductData:AddFundRaiseProps) => void;
     fundRaiseDetails: CampaignCardProps[];
     setFundRaiseDetails: React.Dispatch<React.SetStateAction<CampaignCardProps[]>>;
     donateToOrganisation: (amount: number)=>void;
-    donateToCampaign: (signer:any, amount: number, address: string, id:number)=>void;
+    donateToCampaign: (amount: number, address: string, id:number)=>void;
 }
 
 // Creating the context with an initial value
@@ -27,6 +28,8 @@ interface FundRaiseContextProviderProps {
 
 // provider for the user context
 export const FundRaiseContextProvider: React.FC<FundRaiseContextProviderProps> = ({ children }) => {
+  // getting the transaction provider
+  const signer=GetTransactionProvider();
   // to store all the dao members
   const [daoMembers, setDaoMembers] = useState<string[]>([]);
   // to store all the funds from the database
@@ -59,7 +62,7 @@ export const FundRaiseContextProvider: React.FC<FundRaiseContextProviderProps> =
   }
 
   // a function to store the initial fund details
-  const storeInitialFundDetails=async (signer:any,ProductData:AddFundRaiseProps)=>{
+  const storeInitialFundDetails=async (ProductData:AddFundRaiseProps)=>{
     try {
       console.log("got products in context",ProductData);
       const karna_contract=await CommonKarnaContractSetup(signer);
@@ -81,7 +84,7 @@ export const FundRaiseContextProvider: React.FC<FundRaiseContextProviderProps> =
   }
 
   // to donate to a campaign
-  const donateToCampaign=async (signer:any, amount:number, address: string, id: number)=>{
+  const donateToCampaign=async (amount:number, address: string, id: number)=>{
     try{
       console.log("DONATE TO THE CAMPAIGN INITIATED",amount,address);
       const campaign_contract=await CommonCampaignContractSetup(signer,address);

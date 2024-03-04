@@ -4,11 +4,12 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { CommonKarnaContractSetup } from '@/helpers/commonSetup/CommonActionSetup';
 import { executeCampaign } from '../server/Actions';
+import { GetTransactionProvider } from "@/helpers/wallet/GetTransactionProvider";
 
 // context type
 interface DaoContextType {
-    approveCampiagn:(signer:any,id:number)=>void;
-    addMembers:(signer:any,address:string)=>void;
+    approveCampiagn:(id:number)=>void;
+    addMembers:(address:string)=>void;
 }
 
 // Creating the context with an initial value
@@ -21,8 +22,9 @@ interface DaoContextProviderProps {
 
 // provider for the user context
 export const DaoContextProvider: React.FC<DaoContextProviderProps> = ({ children }) => {
+    const signer=GetTransactionProvider();
     // to approve campaign by the dao members
-    const approveCampiagn=async(signer:any,id:number)=>{
+    const approveCampiagn=async(id:number)=>{
       try{
         console.log("aproving proposal",id);
         const karna_contract=await CommonKarnaContractSetup(signer);
@@ -46,7 +48,7 @@ export const DaoContextProvider: React.FC<DaoContextProviderProps> = ({ children
     }
 
     // to add members to the dao
-    const addMembers=async(signer:any,address:string)=>{
+    const addMembers=async(address:string)=>{
       try{
         console.log("add member",address);
         const karna_contract=await CommonKarnaContractSetup(signer);

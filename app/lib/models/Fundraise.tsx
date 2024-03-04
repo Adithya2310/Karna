@@ -38,6 +38,18 @@ const FundRaiseSchema=new mongoose.Schema({
         required: true,
         default: false
     },
+    endDate:{
+        type:Date,
+        default:Date.now
+    },
+    driveLink:{
+        type:String,
+        required:true
+    },
+    upvotes:{
+        type:Number,
+        default:0
+    },
     deployedContractAddress:{
         type:String,
         default:""

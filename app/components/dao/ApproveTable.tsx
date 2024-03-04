@@ -16,10 +16,9 @@ import { GetTransactionProvider } from "@/helpers/wallet/GetTransactionProvider"
 
 const ApproveTable:FC<{data:CampaignCardProps[]}> = ({data}) => {
   const {approveCampiagn}=useDaoContext();
-  const signer=GetTransactionProvider();
   console.log("table data to be displayed",data);
   const handleClick=(id:number)=>{
-    approveCampiagn(signer,id);
+    approveCampiagn(id);
   }
   return (
     <Table>

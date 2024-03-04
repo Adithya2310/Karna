@@ -25,6 +25,7 @@ import { useState } from "react";
 import { AddFundRaiseProps } from "@/lib/types";
 import { useFundRaiseContext } from "@/lib/context/FundraiseContext";
 import { GetTransactionProvider } from "@/helpers/wallet/GetTransactionProvider";
+import { ScrollArea } from "@/components/ui/scroll-area"
 import { CalendarIcon } from "@radix-ui/react-icons"
 import { format } from "date-fns"
 
@@ -32,7 +33,6 @@ import { format } from "date-fns"
 
 export function CreateDialog() {
   const {storeInitialFundDetails}=useFundRaiseContext();
-  const signer=GetTransactionProvider();
   const [form, setForm]= useState<AddFundRaiseProps>({
     title:'',
     name:'',
@@ -40,6 +40,7 @@ export function CreateDialog() {
     type: 'Campaign',
     amount: 0,
     description: '',
+    driveLink:'',
     endDate: undefined
   });
 
@@ -63,16 +64,14 @@ export function CreateDialog() {
       setForm({
         ...form,
         endDate:date
-      });
-      console.log("the form details are",form);
-      
+      });      
     }
   }
 
   const handleSubmit=(e:React.FormEvent)=>{
     e.preventDefault();
     console.log("Form Submitted",form);
-    storeInitialFundDetails(signer,form);
+    storeInitialFundDetails(form);
   }
 
   return (
@@ -86,13 +85,14 @@ export function CreateDialog() {
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
+      <ScrollArea className="h-[30rem]">
         <DialogHeader>
           <DialogTitle>Start a Fundraise</DialogTitle>
           <DialogDescription>
             All the Campaigns and Requests need to be approved from the DAO before they are live
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className=" flex flex-col gap-4">
+        <form onSubmit={handleSubmit} className=" flex flex-col gap-4 ml-1 my-2">
         <div className="grid w-full max-w-sm items-center gap-1.5">
           <Label htmlFor="title">Title</Label>
           <Input type="text" id="title" placeholder="Enter Title For Your Fundraise" name="title" value={form.title} onChange={handleChange}/>
@@ -157,6 +157,10 @@ export function CreateDialog() {
           <Label htmlFor="description">Description</Label>
           <Textarea id="description" placeholder="Please enter your story here" name="description" value={form.description} onChange={handleChange}/>
         </div>
+        <div className="grid w-full max-w-sm items-center gap-1.5">
+          <Label htmlFor="driveLink">Drive Link</Label>
+          <Input id="driveLink" placeholder="Please enter the drive link of all the documents" name="driveLink" value={form.driveLink} onChange={handleChange}/>
+        </div>
         <DialogFooter className="flex justify-end w-full">
           <DialogClose className=" w-fit" asChild>
             <Button type="submit" variant="primary">
@@ -165,6 +169,7 @@ export function CreateDialog() {
           </DialogClose>
         </DialogFooter>
         </form>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   )
