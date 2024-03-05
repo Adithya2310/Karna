@@ -6,11 +6,14 @@ contract Campaign{
     string public name;
     address public proposer;
     uint256 public amount;
+    uint256 public donatedAmount;
     uint256 public deadline;
     CampaignStatus public status;
+    address[] upvoters;
 
     event DonateEvent(address donor, uint256 amount);
     event WithdrawEvent(uint256 amount);
+    event Upvoted(string name, address upvoter);
 
     constructor(string memory _name, address _proposer, uint256 _amount, uint256 _deadline){
         name = _name;
@@ -18,6 +21,7 @@ contract Campaign{
         amount = _amount;
         status = CampaignStatus.OPEN;
         deadline = _deadline;
+        donatedAmount = 0;
     }
 
     // Modifier to check if the withdrawer is the proposal creator
@@ -31,21 +35,22 @@ contract Campaign{
         require(status == CampaignStatus.OPEN, "Campaign is not open for donation");
         require(msg.value > 0, "Sent value must be greater than 0");
 
-        uint256 total_amount = address(this).balance + msg.value;
+        uint256 total_amount = donatedAmount + msg.value;
         require(total_amount <= amount, "Donated amount exceeds the campaign requirement");
+        donatedAmount = total_amount;
 
         if (total_amount == amount) {
             status = CampaignStatus.READY_TO_CLAIM;
         }
 
-        makeCampaignClaimedOnDeadline();
+        makeCampaignClaimableOnDeadline();
 
         emit DonateEvent(msg.sender, msg.value);
     }
 
     // Function to withdraw funds from campaign
     function withdraw() public onlyProposer {
-        makeCampaignClaimedOnDeadline();
+        makeCampaignClaimableOnDeadline();
 
         require(status == CampaignStatus.READY_TO_CLAIM, "Cannot be claimed yet.");
 
@@ -59,12 +64,26 @@ contract Campaign{
         emit WithdrawEvent(withdraw_amount);
     }
 
+    function upvote() public {
+        for (uint i = 0; i < upvoters.length; i++) {
+            require(upvoters[i] != msg.sender, "Already upvoted!");
+        }
+
+        upvoters.push(msg.sender);
+
+        emit Upvoted(name, msg.sender);
+    }
+
+    function totalUpvotes() public view returns(uint256) {
+        return upvoters.length;
+    }
+
     // Function to get the total amount donated for the campaign
-    function donatedAmount() public view returns(uint256) {
+    function amountDonated() public view returns(uint256) {
         return address(this).balance;
     }
 
-    function makeCampaignClaimedOnDeadline() private {
+    function makeCampaignClaimableOnDeadline() private {
         if (block.timestamp >= deadline) {
             status = CampaignStatus.READY_TO_CLAIM;
         }
