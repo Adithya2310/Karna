@@ -32,7 +32,7 @@ contract Campaign{
 
     // Function to donate to campaign
     function donate() public payable {
-        require(status == CampaignStatus.OPEN, "Campaign is not open for donation");
+        require(status == CampaignStatus.CLAIMED, "Campaign is not open for donation");
         require(msg.value > 0, "Sent value must be greater than 0");
 
         uint256 total_amount = donatedAmount + msg.value;
