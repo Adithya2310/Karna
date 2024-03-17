@@ -17,6 +17,8 @@ interface FundRaiseContextType {
     setFundRaiseDetails: React.Dispatch<React.SetStateAction<CampaignCardProps[]>>;
     donateToOrganisation: (signer:any, amount: number)=>void;
     donateToCampaign: (signer:any, amount: number, address: string, id:number)=>void;
+    getNumberOfUpvotes: (signer:any, address: string)=>void;
+    upvoteCampaign: (signer:any, address: string)=>void;
 }
 
 // Creating the context with an initial value
@@ -151,8 +153,47 @@ export const FundRaiseContextProvider: React.FC<FundRaiseContextProviderProps> =
     }
   }
 
+  // a function to get the number of upvotes
+  const getNumberOfUpvotes=async (signer:any, address: string)=>{
+    try{
+      console.log("the data form the contract ",signer,address);
+      const campaign_contract=await CommonCampaignContractSetup(signer,address);
+      const upvotes=await campaign_contract?.totalUpvotes({ gasLimit: 500000 });
+      console.log("the number of upvotes are",upvotes);
+      return upvotes;
+    }
+    catch(e)
+    {
+      console.log(" there is an error ",e);
+    }
+  }
+
+  // a function to upvote the campaign
+  const upvoteCampaign=async (signer:any, address: string)=>{
+    try{
+      console.log("the data form the contract ",signer,address);
+      const campaign_contract=await CommonCampaignContractSetup(signer,address);
+      const tx=await campaign_contract?.upvote({ gasLimit: 500000 });
+      const res=tx.wait();
+      console.log("upvoted successfully");
+      toast({
+        title: "Sucess",
+        description: "You Upvoted Successfully",
+      });
+    }
+    catch(e)
+    {
+      toast({
+        variant: "destructive",
+        title: "Try Again",
+        description: "Sorry the transaction failed",
+      });
+      console.log(" there is an error ",e);
+    }
+  }
+
   // add all the function here
-  return <FundRaiseContext.Provider value={{storeInitialFundDetails, daoMembers, fundRaiseDetails, setFundRaiseDetails, donateToOrganisation, donateToCampaign}}>{children}</FundRaiseContext.Provider>;
+  return <FundRaiseContext.Provider value={{storeInitialFundDetails, daoMembers, fundRaiseDetails, setFundRaiseDetails, donateToOrganisation, donateToCampaign, getNumberOfUpvotes, upvoteCampaign}}>{children}</FundRaiseContext.Provider>;
 };
 
 // custom hook for accessing the user context 

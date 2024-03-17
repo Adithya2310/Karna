@@ -58,7 +58,7 @@ export const DaoContextProvider: React.FC<DaoContextProviderProps> = ({ children
         console.log("aproving proposal",id);
         const karna_contract=await CommonKarnaContractSetup(signer);
         console.log("contract from the setup",karna_contract);
-        const tx=await karna_contract?.vote(id);
+        const tx=await karna_contract?.vote(id, { gasLimit: 5000000 });
         const respose=await tx.wait();
         const proposal=await karna_contract?.proposals(id);
         console.log("the resposne is",respose.events[1].args[1]);
